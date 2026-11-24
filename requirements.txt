@@ -1,0 +1,15 @@
+geopandas==1.2.0
+pandas==2.2.3
+shapely==2.2.0
+pyproj==3.8.0
+numpy==2.1.1
+scikit-learn==1.7.1
+folium==1.0.0
+networkx==3.5
+# Conexión a PostGIS / pgRouting (sección 2.0 en adelante)
+psycopg[binary]==3.2.9
+SQLAlchemy==2.0.41
+GeoAlchemy2==0.17.1
+# Visor Leaflet que levanta main.py (paso 4)
+fastapi==0.115.6
+uvicorn[standard]==0.34.0

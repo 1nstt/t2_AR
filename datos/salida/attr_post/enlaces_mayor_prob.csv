@@ -1,0 +1,13 @@
+﻿id,codigo_tipo,longitud_km,lugar,pga_g,prob_falla_8_8
+4566,FERRY,0.428,Concepción (47 km),0.569,0.956
+4565,FERRY,25.675,Concepción (39 km),0.546,0.948
+4564,FERRY,5.599,Concepción (32 km),0.521,0.936
+4569,FERRY,0.548,Concepción (31 km),0.516,0.933
+4593,FERRY,0.451,Teodoro Schmidt (40 km),0.404,0.836
+2147,POSTE,20.762,Teodoro Schmidt (24 km),0.341,0.789
+2212,POSTE,16.377,Traiguén (13 km),0.417,0.777
+2233,POSTE,18.667,Temuco (32 km),0.333,0.745
+2208,POSTE,12.12,Los Ángeles (49 km),0.47,0.714
+2601,POSTE,13.295,Curicó (20 km),0.425,0.711
+2235,POSTE,19.631,Villarrica (50 km),0.287,0.711
+2391,POSTE,13.375,Rancagua (51 km),0.42,0.709

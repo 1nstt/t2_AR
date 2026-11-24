@@ -1,0 +1,50 @@
+==============================================================================
+1. Descarga desde la API FDSN de USGS
+==============================================================================
+   ✓ evento_official20100227063411530_30.geojson: 111,145 bytes  (https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=official20100227063411530_30&format=geojson)
+   ✓ consulta_2010-02-27_M8.5.geojson: 1,496 bytes  (https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2010-02-27T00:00:00&endtime=2010-02-28T00:00:00&minmagnitude=8.5)
+   Consulta por fecha y magnitud: 1 evento(s) → ['official20100227063411530_30']
+   ✓ La consulta y el ID devuelven el mismo evento (official20100227063411530_30)
+   ✓ shakemap_cont_mmi.json: 29,411 bytes  (https://earthquake.usgs.gov/product/shakemap/official20100227063411530_30/atlas/1594161725779/download/cont_mmi.json)
+   ✓ shakemap_cont_pga.json: 19,038 bytes  (https://earthquake.usgs.gov/product/shakemap/official20100227063411530_30/atlas/1594161725779/download/cont_pga.json)
+   ShakeMap usado: {'fuente': 'atlas', 'version': '1', 'estado': 'automatic', 'procesado': '2020-06-03T04:52:56Z', 'mmi_max': '8.249'}
+
+==============================================================================
+2. Carga en PostGIS
+==============================================================================
+   [pg] table "terremoto" does not exist, skipping
+   [pg] table "terremoto_mmi" does not exist, skipping
+   [pg] table "terremoto_pga" does not exist, skipping
+   [pg] table "usgs_descargas" does not exist, skipping
+
+==============================================================================
+3. Tablas en la BD
+==============================================================================
+id                        official20100227063411530_30
+titulo            M 8.8 - 2010 Maule, Chile Earthquake
+magnitud                                           8.8
+tipo_magnitud                                      mww
+fecha_utc                   2010-02-27 06:34:11.530000
+fecha_chile                 2010-02-27 03:34:11.530000
+lat                                            -36.122
+lon                                            -72.898
+profundidad_km                                   22.90
+estado                                        reviewed
+mmi_max                                          8.249
+cdi_max                                            9.1
+reportes_sentido                                  2853
+significancia                                     2101
+red                                           official
+geom_wkt                        POINT(-72.898 -36.122)
+
+capa  contornos  min max unidad
+ MMI         13  1.5 7.5    mmi
+ PGA         10 0.05  50   pctg
+
+                                                       archivo  bytes            descargado_utc                                                           sha256
+datos/entrada/usgs/evento_official20100227063411530_30.geojson 111145 2026-11-22 03:34:22+00:00 fee979e84540bbacf34443e7d332049002798d5c81ba81e335f8f387bb8f8b74
+           datos/entrada/usgs/consulta_2010-02-27_M8.5.geojson   1496 2026-11-22 03:34:23+00:00 32fcc5ecf6e47a522d6c27894c13bc46aae7def08decc497640d9ba4f8a15da3
+                     datos/entrada/usgs/shakemap_cont_mmi.json  29411 2026-11-22 03:34:23+00:00 d894cde5f9df4f8ca6d328c18479860ee16812c55c2ce1c8a90a9b5ca33a6451
+                     datos/entrada/usgs/shakemap_cont_pga.json  19038 2026-11-22 03:34:24+00:00 82d3342bbd3db664ec7ad253dab50a63b94a8c8be93c1bdc685b55331fddc6be
+
+✓ datos/entrada/usgs/ (originales) · datos/salida/terremoto/ (tablas y log) · tablas terremoto, terremoto_mmi, terremoto_pga, usgs_descargas

@@ -1,0 +1,83 @@
+name: t2-ruteo
+
+services:
+  db:
+    # PostgreSQL 17 + PostGIS 3.5 + pgRouting 3.7.3
+    # (3.7 todavía trae pgr_createTopology sin marca de obsoleto; se eliminó en 4.0)
+    image: pgrouting/pgrouting:17-3.5-3.7.3
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+      - ./sql:/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Visor web dinámico: http://localhost:8000  (lee la BD en vivo)
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8000}:8000"
+    volumes:
+      - .:/app:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # main.py: TODO el flujo con un solo comando (BD desde main.sql, P(falla),
+  # ATTR antes/después y mapa Leaflet en http://localhost:8080)
+  #     python main.py   (o: docker compose up --build main)
+  main:
+    build: .
+    user: "${UID:-1000}:${GID:-1000}"
+    command: ["python", "main.py"]
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      MAIN_HOST: 0.0.0.0
+      T2_EN_DOCKER: "1"
+      MAPA_URL: http://localhost:${MAIN_PORT:-8080}
+    ports:
+      - "127.0.0.1:${MAIN_PORT:-8080}:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

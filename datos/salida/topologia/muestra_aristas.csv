@@ -1,0 +1,11 @@
+﻿id,id_red,sub_id,codigo_tipo,km,source,target,prob_falla,sintetico
+1,1,1,FIBRA,4.823,11,12,0.0,False
+2,2,1,FIBRA,4.917,12,4544,0.0,False
+3,3,1,FIBRA,7.871,4544,4545,0.0,False
+4,4,1,FIBRA,6.917,4545,4546,0.0,False
+5,5,1,FIBRA,6.229,4546,4547,0.0,False
+6,6,1,FIBRA,2.733,4547,54,0.0,False
+7,7,1,FIBRA,9.735,54,305,0.0,False
+8,8,1,FIBRA,7.693,404,15,0.0,False
+9,9,1,FIBRA,12.056,15,16,0.0,False
+10,10,1,FIBRA,8.188,16,17,0.0,False

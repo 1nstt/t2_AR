@@ -1,0 +1,22 @@
+﻿parametro,valor,unidad,fuente
+magnitud,8.800000,Mw,"USGS, tabla terremoto (apartado 4.0)"
+profundidad_hipocentro,22.900000,km,"USGS, tabla terremoto (apartado 4.0)"
+rumbo,17.500000,grados,"Falla finita USGS (G. Hayes), citada en GEER (2010) §2.2"
+manteo,18.000000,grados,"Falla finita USGS (G. Hayes), citada en GEER (2010) §2.2"
+largo_al_norte,275.000000,km,"Zona de réplicas ~530 km (GEER 2010 §2.2), de ~33,6°S a ~38,3°S"
+largo_al_sur,255.000000,km,"Zona de réplicas ~530 km (GEER 2010 §2.2), de ~33,6°S a ~38,3°S"
+ancho_sobre_hipo,61.000000,km,Ancho 180 km (GEER 2010 §2.2); borde superior a ~4 km de profundidad
+ancho_bajo_hipo,119.000000,km,Ancho 180 km (GEER 2010 §2.2); borde inferior a ~60 km de profundidad
+youngs_c0,0.241800,-,"Youngs et al. (1997), ec. de roca"
+youngs_c1,1.414000,-,"Youngs et al. (1997), ec. de roca"
+youngs_c3,-2.552000,-,"Youngs et al. (1997), Tabla 2 (PGA, roca)"
+youngs_c4,1.781800,-,"Youngs et al. (1997), ec. de roca"
+youngs_c5,0.554000,-,"Youngs et al. (1997), ec. de roca"
+youngs_c6,0.006070,1/km,"Youngs et al. (1997), ec. de roca (término de profundidad)"
+youngs_zt,0.000000,-,Youngs et al. (1997): Zt = 0 para sismo interplaca
+pgv_por_g,91.000000,cm/s/g,Newmark y Hall (1982): v/a = 36 in/s por g en roca
+ala_coef,0.002416,cortes/km por cm/s,"ALA (2001): RR = K1 x 0,00187 x PGV [rep/1000 pies, in/s], en km y cm/s"
+puerto_mediana,0.350000,g,"FEMA HAZUS-MH MR4, cap. 7 (puertos, estructuras de borde costero), daño moderado"
+puerto_beta,0.600000,-,"FEMA HAZUS-MH MR4, cap. 7 (puertos, estructuras de borde costero)"
+termino_evento,0.704108,-,"Calibración con los 12 registros de la tabla registro_27f (GEER 2010, Tabla 2.1)"
+sigma_calibracion,0.255756,ln,Desviación de los residuos de la calibración

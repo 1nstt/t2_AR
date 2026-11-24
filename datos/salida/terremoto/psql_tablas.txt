@@ -1,0 +1,53 @@
+                           Table "public.terremoto"
+      Column      |           Type           | Collation | Nullable | Default 
+------------------+--------------------------+-----------+----------+---------
+ id               | text                     |           | not null | 
+ titulo           | text                     |           |          | 
+ lugar            | text                     |           |          | 
+ magnitud         | numeric(3,1)             |           |          | 
+ tipo_magnitud    | text                     |           |          | 
+ fecha_utc        | timestamp with time zone |           |          | 
+ profundidad_km   | numeric(6,2)             |           |          | 
+ estado           | text                     |           |          | 
+ tsunami          | integer                  |           |          | 
+ significancia    | integer                  |           |          | 
+ mmi_max          | numeric(5,3)             |           |          | 
+ cdi_max          | numeric(4,1)             |           |          | 
+ reportes_sentido | integer                  |           |          | 
+ alerta           | text                     |           |          | 
+ red              | text                     |           |          | 
+ ids_asociados    | text                     |           |          | 
+ url_evento       | text                     |           |          | 
+ url_geojson      | text                     |           |          | 
+ actualizado_utc  | timestamp with time zone |           |          | 
+ geojson          | jsonb                    |           |          | 
+ geom             | geometry(Point,4326)     |           |          | 
+Indexes:
+    "terremoto_pkey" PRIMARY KEY, btree (id)
+    "terremoto_geom_idx" gist (geom)
+Referenced by:
+    TABLE "terremoto_mmi" CONSTRAINT "terremoto_mmi_evento_id_fkey" FOREIGN KEY (evento_id) REFERENCES terremoto(id)
+    TABLE "terremoto_pga" CONSTRAINT "terremoto_pga_evento_id_fkey" FOREIGN KEY (evento_id) REFERENCES terremoto(id)
+
+              id              |                titulo                | magnitud | tipo_magnitud |         fecha_utc         | profundidad_km |       epicentro        
+------------------------------+--------------------------------------+----------+---------------+---------------------------+----------------+------------------------
+ official20100227063411530_30 | M 8.8 - 2010 Maule, Chile Earthquake |      8.8 | mww           | 2010-02-27 06:34:11.53+00 |          22.90 | POINT(-72.898 -36.122)
+(1 row)
+
+ id |          evento_id           | valor | unidad | lineas 
+----+------------------------------+-------+--------+--------
+  1 | official20100227063411530_30 |   1.5 | mmi    |      1
+  2 | official20100227063411530_30 |     2 | mmi    |      1
+  3 | official20100227063411530_30 |   2.5 | mmi    |      7
+  4 | official20100227063411530_30 |     3 | mmi    |      6
+  5 | official20100227063411530_30 |   3.5 | mmi    |      1
+  6 | official20100227063411530_30 |     4 | mmi    |      2
+  7 | official20100227063411530_30 |   4.5 | mmi    |      2
+  8 | official20100227063411530_30 |     5 | mmi    |      2
+  9 | official20100227063411530_30 |   5.5 | mmi    |      1
+ 10 | official20100227063411530_30 |     6 | mmi    |      1
+ 11 | official20100227063411530_30 |   6.5 | mmi    |      4
+ 12 | official20100227063411530_30 |     7 | mmi    |      2
+ 13 | official20100227063411530_30 |   7.5 | mmi    |      2
+(13 rows)
+

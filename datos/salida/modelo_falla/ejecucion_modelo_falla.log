@@ -1,0 +1,147 @@
+==============================================================================
+4.1 / 4.2 · Modelo de falla del sismo M 8.8 (27F)
+==============================================================================
+-> SQL: sql/terremoto/02_modelo_falla.sql
+
+Epicentro (USGS, tabla terremoto)
+---------------------------------
+                          id magnitud profundidad_km     lon     lat
+official20100227063411530_30      8.8          22.90 -72.898 -36.122
+
+Parámetros del modelo (tabla modelo_parametros)
+-----------------------------------------------
+             parametro      valor             unidad                                                                           fuente
+              magnitud   8.800000                 Mw                                             USGS, tabla terremoto (apartado 4.0)
+profundidad_hipocentro  22.900000                 km                                             USGS, tabla terremoto (apartado 4.0)
+                 rumbo  17.500000             grados                         Falla finita USGS (G. Hayes), citada en GEER (2010) §2.2
+                manteo  18.000000             grados                         Falla finita USGS (G. Hayes), citada en GEER (2010) §2.2
+        largo_al_norte 275.000000                 km                  Zona de réplicas ~530 km (GEER 2010 §2.2), de ~33,6°S a ~38,3°S
+          largo_al_sur 255.000000                 km                  Zona de réplicas ~530 km (GEER 2010 §2.2), de ~33,6°S a ~38,3°S
+      ancho_sobre_hipo  61.000000                 km             Ancho 180 km (GEER 2010 §2.2); borde superior a ~4 km de profundidad
+       ancho_bajo_hipo 119.000000                 km            Ancho 180 km (GEER 2010 §2.2); borde inferior a ~60 km de profundidad
+             youngs_c0   0.241800                  -                                                Youngs et al. (1997), ec. de roca
+             youngs_c1   1.414000                  -                                                Youngs et al. (1997), ec. de roca
+             youngs_c3  -2.552000                  -                                        Youngs et al. (1997), Tabla 2 (PGA, roca)
+             youngs_c4   1.781800                  -                                                Youngs et al. (1997), ec. de roca
+             youngs_c5   0.554000                  -                                                Youngs et al. (1997), ec. de roca
+             youngs_c6   0.006070               1/km                       Youngs et al. (1997), ec. de roca (término de profundidad)
+             youngs_zt   0.000000                  -                               Youngs et al. (1997): Zt = 0 para sismo interplaca
+             pgv_por_g  91.000000             cm/s/g                               Newmark y Hall (1982): v/a = 36 in/s por g en roca
+              ala_coef   0.002416 cortes/km por cm/s          ALA (2001): RR = K1 x 0,00187 x PGV [rep/1000 pies, in/s], en km y cm/s
+        puerto_mediana   0.350000                  g FEMA HAZUS-MH MR4, cap. 7 (puertos, estructuras de borde costero), daño moderado
+           puerto_beta   0.600000                  -                FEMA HAZUS-MH MR4, cap. 7 (puertos, estructuras de borde costero)
+        termino_evento   0.704108                  - Calibración con los 12 registros de la tabla registro_27f (GEER 2010, Tabla 2.1)
+     sigma_calibracion   0.255756                 ln                                     Desviación de los residuos de la calibración
+
+Fragilidad por tipo de enlace (tabla fragilidad_tipo)
+-----------------------------------------------------
+codigo_tipo       modelo   k                                                                                                                               justificacion
+      FIBRA     ALA_2001 0.3 Cable de fibra en ducto HDPE enterrado: muy dúctil y tolera deformación; se asimila al rango bajo de K1 de ALA (tuberías dúctiles 0,3-0,5).
+   CONECTOR     ALA_2001 0.3                                                     Enlace sintético (apartado 2.0): se supone fibra enterrada como el resto de la troncal.
+     CAMINO     ALA_2001 0.5        Fibra a enterrar junto al camino: además del suelo, expuesta a derrumbes, puentes y terraplenes; K1 = 0,5 (dúctil, mitad del rango).
+      POSTE     ALA_2001 1.0              Cable aéreo en postación eléctrica: caída de postes, choque de conductores y dependencia de la red eléctrica; K1 = 1 (frágil).
+      FERRY HAZUS_PUERTO NaN        Sin cable: el enlace se corta si queda fuera de servicio un terminal portuario (daño en muelles o suspensión por alerta de tsunami).
+
+Calibración: PGA medida en el 27F vs modelo
+-------------------------------------------
+                             estacion  pga_medida_g dist_epicentro_km dist_ruptura_km pga_modelo_g modelo_sobre_medida
+Concepción - Colegio San Pedro (CCSP)          0.65              79.8            26.1        0.518                0.80
+              Curicó - Hospital (CUR)          0.47             196.9            52.8        0.403                0.86
+           Santiago - CRS Maipú (CRS)          0.56             349.3            79.8        0.321                0.57
+    Santiago - Campus Antumapu (ANTU)          0.27             351.0            80.9        0.318                1.18
+Santiago - Hosp. Sótero del Río (RIO)          0.27             353.1            82.4        0.314                1.16
+      Santiago - Metro Mirador (SANM)          0.24             357.5            86.0        0.305                1.27
+         Santiago - Hosp. Tisné (FSR)          0.30             360.1            88.1        0.300                1.00
+    Viña del Mar - Marga Marga (VDMM)          0.35             364.2            92.3        0.290                0.83
+         Viña del Mar - Centro (VDMC)          0.33             365.3            93.1        0.288                0.87
+        Santiago - Cerro Calán (CLCH)          0.23             371.8            98.0        0.277                1.21
+                Cerro El Roble (ROC1)          0.19             389.6           117.5        0.240                1.26
+           Valdivia - Hospital (VLCH)          0.14             413.2           153.4        0.187                1.34
+
+Medida de distancia: comparación de la calibración
+--------------------------------------------------
+                            distancia termino_evento factor sigma_ln
+        Distancia hipocentral (punto)          2.110   8.25    0.362
+Distancia al plano de ruptura (usada)          0.704   2.02    0.256
+
+Validación: PGA del modelo sobre los contornos de PGA del ShakeMap (USGS)
+-------------------------------------------------------------------------
+        pga_shakemap_g  puntos pga_modelo_media_geom_g razon_modelo_shakemap
+0.50000000000000000000      20                   0.522                  1.04
+0.20000000000000000000      38                   0.326                  1.63
+0.10000000000000000000      63                   0.237                  2.37
+0.05000000000000000000      46                   0.144                  2.88
+0.02000000000000000000       7                   0.072                  3.58
+
+Resumen por tipo de enlace (prob_falla_8_8)
+-------------------------------------------
+codigo_tipo  enlaces      km  con_pga_mayor_0_1g p_media  p_max cortes_esperados
+      POSTE     1273  6712.3                 693  0.1724 0.7888            219.5
+      FIBRA     2041 10312.8                1230  0.0608 0.4949            124.1
+     CAMINO     1206  8107.7                 191  0.0349 0.5914             42.1
+      FERRY      206  2390.1                   6  0.0240 0.9562              4.9
+   CONECTOR        4     3.0                   4  0.0216 0.0754              0.1
+
+Total
+-----
+ enlaces cortes_esperados  con_p_mayor_0_5  con_p_menor_0_001    p_min  p_max
+    4730            390.7               87                410 0.000000 0.9562
+
+Por banda de latitud (2°)
+-------------------------
+ lat_desde  enlaces pga_media_g p_media cortes_esperados
+       -18       37       0.003  0.0018              0.1
+       -20      186       0.003  0.0037              0.7
+       -22      184       0.004  0.0041              0.8
+       -24      297       0.006  0.0050              1.5
+       -26      140       0.010  0.0081              1.1
+       -28      202       0.016  0.0154              3.1
+       -30      149       0.033  0.0249              3.7
+       -32      209       0.078  0.0547             11.4
+       -34      374       0.294  0.0981             36.7
+       -36      560       0.437  0.1886            105.6
+       -38      533       0.446  0.2018            107.6
+       -40      460       0.319  0.1967             90.5
+       -42      313       0.102  0.0638             20.0
+       -44      210       0.040  0.0169              3.6
+       -46      197       0.020  0.0097              1.9
+       -48      150       0.012  0.0102              1.5
+       -50       71       0.008  0.0024              0.2
+       -52       90       0.005  0.0018              0.2
+       -54      319       0.004  0.0019              0.6
+       -56       49       0.003  0.0007              0.0
+
+Enlaces MÁS afectados
+---------------------
+  id  id_red codigo_tipo    km     lat     lon dist_epi_km dist_rup_km pga_g cortes_km prob_falla_8_8
+4566    4337       FERRY  0.43 -37.045 -73.508       116.2        16.8 0.569      None         0.9562
+4565    4336       FERRY 25.68 -37.070 -73.364       111.8        20.8 0.546      None         0.9477
+4564    4335       FERRY  5.60 -37.096 -73.192       111.0        25.5 0.521      None         0.9356
+4569    4340       FERRY  0.55 -37.096 -73.158       110.5        26.4 0.516      None         0.9332
+4593    4364       FERRY  0.45 -38.748 -73.408       295.0        52.5 0.404      None         0.8359
+2147    2017       POSTE 20.76 -39.007 -72.814       316.8        72.4 0.341    0.0749         0.7888
+2212    2079       POSTE 16.38 -38.156 -72.753       219.0        49.2 0.417    0.0916         0.7769
+2233    2098       POSTE 18.67 -38.990 -72.426       319.9        75.1 0.333    0.0732         0.7451
+2208    2075       POSTE 12.12 -37.344 -72.889       131.2        36.2 0.470    0.1033         0.7139
+2601    2442       POSTE 13.30 -35.002 -71.461       174.2        47.1 0.425    0.0934         0.7111
+2235    2100       POSTE 19.63 -38.901 -71.921       318.7        93.5 0.287    0.0631         0.7105
+2391    2246       POSTE 13.37 -33.819 -71.098       303.9        48.3 0.420    0.0923         0.7091
+2727    2561       POSTE 12.38 -35.060 -71.573       162.3        44.7 0.434    0.0954         0.6932
+2210    2077       POSTE 11.81 -37.464 -72.756       144.7        41.1 0.449    0.0987         0.6882
+2234    2099       POSTE 16.50 -38.981 -72.232       320.1        81.0 0.317    0.0697         0.6836
+
+Enlaces MENOS afectados
+-----------------------
+  id  id_red codigo_tipo    km     lat     lon dist_epi_km dist_rup_km pga_g cortes_km prob_falla_8_8
+4552    4324       FERRY  6.09 -46.464 -71.737      1150.3       876.4 0.013      None         0.0000
+4680    4451       FERRY 11.49 -51.928 -72.694      1753.6      1480.4 0.004      None         0.0000
+4662    4433       FERRY 11.87 -50.569 -74.775      1609.9      1340.4 0.005      None         0.0000
+4624    4395       FERRY  8.79 -50.493 -74.858      1602.7      1332.9 0.005      None         0.0000
+4584    4355       FERRY  0.91 -53.167 -70.908      1900.7      1623.3 0.003      None         0.0000
+4618    4389       FERRY  6.02 -45.120 -73.485       998.6       727.6 0.018      None         0.0000
+1834    1723       FIBRA  0.07 -52.427 -71.414      1816.4      1538.6 0.004    0.0003         0.0000
+4527    4299       FERRY  5.03 -53.324 -70.508      1921.1      1643.4 0.003      None         0.0000
+4669    4440       FERRY 10.68 -51.193 -74.152      1674.6      1404.0 0.005      None         0.0000
+4553    4325       FERRY  5.11 -46.514 -71.736      1156.4       882.0 0.013      None         0.0000
+
+✓ red actualizada (prob_falla_8_8 y columnas del cálculo) | datos/salida/modelo_falla/

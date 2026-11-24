@@ -1,0 +1,5 @@
+﻿escenario,metodo,iteraciones,attr,ic95_inf,ic95_sup,attr_previo,diferencia,variacion_pct
+operacion,exacto,0,0.963636,0.963636,0.963636,0.963636,0.0,0.0
+post_terremoto_8_8,montecarlo,20000,0.130923,0.130523,0.131324,0.963636,-0.832713,-86.413602
+operacion_sin_sinteticos,exacto,0,0.478788,0.478788,0.478788,0.478788,0.0,0.0
+post_terremoto_8_8_sin_sinteticos,montecarlo,20000,0.131146,0.130744,0.131547,0.478788,-0.347642,-72.608762

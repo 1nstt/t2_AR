@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visor Red Troncal</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="barra">
+  <button id="btn-panel" class="btn-icono" aria-label="Mostrar u ocultar panel">☰</button>
+  <div class="titulo">
+    <strong>Red troncal de Internet en Chile</strong>
+    <span>resiliencia ante el M 8.8 del 27F · datos en vivo desde PostGIS</span>
+  </div>
+  <div class="escenario" role="group" aria-label="Escenario">
+    <button id="esc-op" title="Red tal como opera hoy: prob_falla = 0 en todos los enlaces (2.0 y 3.1)">En operación</button>
+    <button id="esc-sismo" title="Red tras el M 8.8 del 27F: prob_falla_8_8 de cada enlace (4.1 a 5.0)">Terremoto 8.8</button>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <nav class="acciones">
+    <details class="menu">
+      <summary class="btn">Mapas estáticos</summary>
+      <div class="menu-lista">
+        <a href="/mapas/mapa_infraestructura.html" target="_blank">Infraestructura (1.0)</a>
+        <a href="/mapas/mapa_nodos_clave.html" target="_blank">Nodos clave (1.0)</a>
+        <a href="/mapas/mapa_topologia.html" target="_blank">Topología (2.0)</a>
+        <a href="/api/docs" target="_blank">API (Swagger)</a>
+      </div>
+    </details>
+  </nav>
+</header>
+
+<main class="cuerpo">
+  <aside class="panel" id="panel">
+    <div class="pestanas" role="tablist">
+      <button class="pestana activa" data-tab="red">Red</button>
+      <button class="pestana" data-tab="nodos">Nodos clave</button>
+      <button class="pestana" data-tab="sismo">Terremoto</button>
+      <button class="pestana" data-tab="resumen">ATTR</button>
+    </div>
+
+    <!-- RED ------------------------------------------------------------ -->
+    <section class="contenido activa" id="tab-red">
+      <h3>Colorear enlaces por</h3>
+      <div class="segmentado" id="modo-color">
+        <button data-modo="tipo" class="activo">Tipo</button>
+        <button data-modo="comp">Componente</button>
+        <button data-modo="p">P(falla) 8.8</button>
+        <button data-modo="pga">PGA</button>
+        <button data-modo="crit">Criticidad</button>
+      </div>
+      <div class="leyenda" id="leyenda"></div>
+
+      <h3>Filtrar enlaces</h3>
+      <div class="chips" id="f-tipos"></div>
+      <label class="campo">Componente
+        <select id="f-comp"><option value="">Todas</option></select>
+      </label>
+      <label class="campo">Largo mínimo: <b id="f-km-txt">0 km</b>
+        <input type="range" id="f-km" min="0" max="30" step="0.5" value="0">
+      </label>
+      <label class="check"><input type="checkbox" id="f-sint"> Solo enlaces sintéticos (2.0)</label>
+      <fieldset class="solo-sismo" id="f-sismo">
+        <legend>Filtros del terremoto</legend>
+        <label class="campo">P(falla) tras el 8.8: <b id="f-p-txt">0 – 1</b>
+          <div class="doble">
+            <input type="range" id="f-pmin" min="0" max="1" step="0.01" value="0">
+            <input type="range" id="f-pmax" min="0" max="1" step="0.01" value="1">
+          </div>
+        </label>
+        <label class="campo">PGA mínima: <b id="f-pga-txt">0 g</b>
+          <input type="range" id="f-pga" min="0" max="0.6" step="0.01" value="0">
+        </label>
+        <label class="check"><input type="checkbox" id="f-puente"> Solo puentes críticos (5.0)</label>
+      </fieldset>
+      <button class="btn chico" id="f-reset">Limpiar filtros</button>
+      <div class="contador" id="cont-red"></div>
+
+      <h3>Capas</h3>
+      <label class="check"><input type="checkbox" id="c-red" checked> Enlaces</label>
+      <label class="check"><input type="checkbox" id="c-vert"> Vértices de <code>pgr_createTopology</code></label>
+      <div class="sub" id="f-grados">
+        <span>Grado:</span>
+        <label><input type="checkbox" value="1" checked> 1</label>
+        <label><input type="checkbox" value="2"> 2</label>
+        <label><input type="checkbox" value="3" checked> ≥ 3</label>
+      </div>
+      <label class="check"><input type="checkbox" id="c-nodos" checked> Nodos clave</label>
+      <fieldset class="solo-sismo" id="c-sismo">
+        <legend>Capas del terremoto</legend>
+        <label class="check"><input type="checkbox" id="c-epi" checked> Epicentro y plano de ruptura</label>
+        <label class="check"><input type="checkbox" id="c-pga"> Contornos PGA del ShakeMap</label>
+        <label class="check"><input type="checkbox" id="c-mmi"> Contornos MMI del ShakeMap</label>
+        <label class="check"><input type="checkbox" id="c-est"> Acelerógrafos del 27F</label>
+      </fieldset>
+    </section>
+
+    <!-- NODOS ------------------------------------------------------------ -->
+    <section class="contenido" id="tab-nodos">
+      <input type="search" id="n-buscar" placeholder="Buscar: Valparaíso, PIT, Santiago…">
+      <h3>Colorear por</h3>
+      <div class="segmentado" id="n-modo">
+        <button data-modo="rol" class="activo">Rol</button>
+        <button data-modo="perdida">Pérdida tras el 8.8</button>
+      </div>
+      <div class="leyenda" id="n-leyenda"></div>
+      <h3>Rol</h3>
+      <div class="chips" id="n-roles"></div>
+      <h3>Tipo</h3>
+      <div class="chips" id="n-tipos"></div>
+      <label class="check"><input type="checkbox" id="n-lineas" checked> Línea al vértice asignado</label>
+      <div class="contador" id="cont-nodos"></div>
+      <ul class="lista" id="n-lista"></ul>
+    </section>
+
+    <!-- SISMO ------------------------------------------------------------ -->
+    <section class="contenido" id="tab-sismo">
+      <div class="caja alerta aviso-op">El escenario <b>Terremoto 8.8</b> está desactivado: el mapa muestra la red en operación.
+        <br><button class="btn chico" id="s-activar">Activar terremoto</button></div>
+      <div id="s-evento"></div>
+      <h3>Modelo de falla (4.1)</h3>
+      <p class="nota">Epicentro → distancia al plano de ruptura (Kaklamanos 2011) → PGA (Youngs 1997, calibrada con el 27F)
+        → P(falla) (ALA 2001 para cables, HAZUS para ferry).</p>
+      <div id="s-fragilidad"></div>
+      <details><summary>Parámetros y fuentes</summary><div id="s-param"></div></details>
+      <details><summary>Calibración: 12 acelerógrafos del 27F</summary><div id="s-est"></div></details>
+      <details><summary>Archivos descargados del USGS</summary><div id="s-desc"></div></details>
+    </section>
+
+    <!-- RESUMEN ------------------------------------------------------------ -->
+    <section class="contenido" id="tab-resumen">
+      <div id="r-attr"></div>
+      <h3>Enlaces críticos (puentes)</h3>
+      <p class="nota">Enlaces sin ruta alternativa que separan nodos clave. Pérdida esperada = P(falla) × caída del ATTR si se corta.</p>
+      <ul class="lista" id="r-criticos"></ul>
+      <h3>Por tipo de enlace</h3>
+      <div id="r-tipos"></div>
+      <h3>Componentes conexas</h3>
+      <div id="r-comp"></div>
+      <h3>Enlaces sintéticos</h3>
+      <ul class="lista" id="r-sint"></ul>
+    </section>
+  </aside>
+
+  <div class="mapa-wrap">
+    <div id="mapa"></div>
+    <div class="cargando" id="cargando">Cargando datos de PostGIS…</div>
+  </div>
+
+  <aside class="ficha" id="ficha" hidden>
+    <button class="cerrar" id="ficha-cerrar" aria-label="Cerrar">✕</button>
+    <div id="ficha-cuerpo"></div>
+  </aside>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

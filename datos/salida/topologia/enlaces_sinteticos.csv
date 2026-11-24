@@ -1,0 +1,5 @@
+﻿id,regla,comp_desde,comp_hasta,dist_m,lat,lon,justificacion
+1,R1,C1,C13,46.1,-39.83602,-72.57170,"Hueco entre trazados: extremo libre de C1 a 46.1 m de un tramo POSTE de C13 (mayor que la tolerancia de 5 m, menor o igual a 500 m)."
+2,R1,C1,C17,350.8,-34.96704,-71.19579,"Hueco entre trazados: extremo libre de C1 a 350.8 m de un tramo FIBRA de C17 (mayor que la tolerancia de 5 m, menor o igual a 500 m)."
+3,R1,C9,C1,28.2,-37.22889,-73.45760,"Hueco entre trazados: extremo libre de C9 a 28.2 m de un tramo POSTE de C1 (mayor que la tolerancia de 5 m, menor o igual a 500 m)."
+4,R2,C1,C2,2596.8,-33.62279,-71.60606,"Continuidad troncal: las componentes C1 (16113.3 km) y C2 (10977.3 km) están separadas por 2597 m; la red troncal norte-sur es continua en la realidad, pero los datos no traen el tramo que las une. Conector entre el par de vértices más cercano."

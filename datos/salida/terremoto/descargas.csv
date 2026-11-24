@@ -1,0 +1,5 @@
+﻿archivo,bytes,descargado_utc,sha256
+datos/entrada/usgs/evento_official20100227063411530_30.geojson,111145,2026-11-22 03:34:22+00:00,fee979e84540bbacf34443e7d332049002798d5c81ba81e335f8f387bb8f8b74
+datos/entrada/usgs/consulta_2010-02-27_M8.5.geojson,1496,2026-11-22 03:34:23+00:00,32fcc5ecf6e47a522d6c27894c13bc46aae7def08decc497640d9ba4f8a15da3
+datos/entrada/usgs/shakemap_cont_mmi.json,29411,2026-11-22 03:34:23+00:00,d894cde5f9df4f8ca6d328c18479860ee16812c55c2ce1c8a90a9b5ca33a6451
+datos/entrada/usgs/shakemap_cont_pga.json,19038,2026-11-22 03:34:24+00:00,82d3342bbd3db664ec7ad253dab50a63b94a8c8be93c1bdc685b55331fddc6be

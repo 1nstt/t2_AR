@@ -1,0 +1,56 @@
+﻿nombre,tipo,rol,id_vertice,pga_g,lugar,confiab_previa,confiab_post,perdida,perdida_pct
+CLS Constitución,Aterrizaje cable submarino,INTERCAMBIA,667,0.521,Talca (69 km),0.9815,0.0,0.9815,100.0
+CLS San Pedro de la Paz,Aterrizaje cable submarino,INTERCAMBIA,56,0.528,Concepción (7 km),0.9815,0.0,0.9815,100.0
+Equinix ST1/ST2,Data center,GENERA,526,0.338,Santiago (21 km),0.9815,0.0,0.9815,100.0
+CLS Puerto Saavedra,Aterrizaje cable submarino,INTERCAMBIA,1927,0.394,Teodoro Schmidt (36 km),0.9815,0.0004,0.9811,100.0
+"Troncal N-2218 (Traiguén, 1 km)",Nodo troncal,INTERCAMBIA,791,0.403,Traiguén,0.9815,0.0007,0.9808,99.9
+"Troncal N-0709 (Teodoro Schmidt, 12 km)",Nodo troncal,INTERCAMBIA,770,0.320,Teodoro Schmidt (12 km),0.9815,0.002,0.9795,99.8
+CLS Cartagena,Aterrizaje cable submarino,INTERCAMBIA,1782,0.439,Valparaíso (56 km),0.9815,0.0026,0.9789,99.7
+ixFabric Valdivia,IXP / PIT,INTERCAMBIA,1356,0.189,Valdivia,0.9815,0.0165,0.965,98.3
+PIT Concepción,IXP / PIT,INTERCAMBIA,727,0.518,Concepción,0.9815,0.0186,0.9629,98.1
+Opciones Concepción,Data center,GENERA,727,0.518,Concepción,0.9815,0.0186,0.9629,98.1
+Anacondaweb Temuco,Data center,GENERA,257,0.376,Temuco,0.9815,0.0194,0.9621,98.0
+PIT Temuco,IXP / PIT,INTERCAMBIA,257,0.376,Temuco,0.9815,0.0194,0.9621,98.0
+MetroPort IX,IXP / PIT,INTERCAMBIA,4298,0.288,Valparaíso (6 km),0.9815,0.0305,0.951,96.9
+"Troncal N-2853 (Río Bueno, 22 km)",Nodo troncal,INTERCAMBIA,2940,0.143,Río Bueno (22 km),0.9815,0.0377,0.9438,96.2
+Scala SSCLCR01 (Placilla),Data center,GENERA,432,0.320,Valparaíso (14 km),0.9815,0.0382,0.9433,96.1
+Telxius Valparaíso DC,Data center,GENERA,652,0.298,Valparaíso,0.9815,0.0397,0.9418,96.0
+CLS Valparaíso,Aterrizaje cable submarino,GENERA,652,0.298,Valparaíso,0.9815,0.0397,0.9418,96.0
+CLS Meimen (Chacao norte),Aterrizaje cable submarino,INTERCAMBIA,1965,0.064,Puerto Montt (37 km),0.9815,0.131,0.8505,86.7
+Apoapsis Ojo Bueno,Data center,GENERA,976,0.003,Punta Arenas (15 km),0.9815,0.1317,0.8498,86.6
+CLS Puerto Williams,Aterrizaje cable submarino,RECIBE,1997,0.003,Porvenir (256 km),0.9815,0.1317,0.8498,86.6
+CLS Punta Arenas,Aterrizaje cable submarino,INTERCAMBIA,2439,0.003,Punta Arenas,0.9815,0.1317,0.8498,86.6
+PatagoniaIX,IXP / PIT,INTERCAMBIA,976,0.003,Punta Arenas (15 km),0.9815,0.1317,0.8498,86.6
+CLS Caleta Tortel,Aterrizaje cable submarino,RECIBE,3143,0.009,Cochrane (95 km),0.9815,0.1318,0.8497,86.6
+CLS Linao (Chacao sur),Aterrizaje cable submarino,INTERCAMBIA,883,0.059,Castro (69 km),0.9815,0.1382,0.8433,85.9
+CLS Puerto Chacabuco,Aterrizaje cable submarino,RECIBE,1211,0.017,Coyhaique (60 km),0.9815,0.1383,0.8432,85.9
+"Troncal N-0057 (Puerto Montt, 18 km)",Nodo troncal,INTERCAMBIA,71,0.080,Puerto Montt (18 km),0.9815,0.1453,0.8362,85.2
+CLS La Serena,Aterrizaje cable submarino,INTERCAMBIA,620,0.048,La Serena,0.9815,0.1467,0.8348,85.1
+CLS Puerto Montt,Aterrizaje cable submarino,INTERCAMBIA,707,0.074,Puerto Montt,0.9815,0.1484,0.8331,84.9
+CLS Quellón,Aterrizaje cable submarino,INTERCAMBIA,4456,0.035,Chaitén (70 km),0.9815,0.1488,0.8327,84.8
+"Troncal N-1896 (Chaitén, 0 km)",Nodo troncal,INTERCAMBIA,1981,0.039,Chaitén,0.9815,0.1488,0.8327,84.8
+"Troncal N-1644 (La Serena, 46 km)",Nodo troncal,INTERCAMBIA,1522,0.040,La Serena (46 km),0.9815,0.1637,0.8178,83.3
+"Troncal N-1641 (Vallenar, 0 km)",Nodo troncal,INTERCAMBIA,1726,0.028,Vallenar,0.9815,0.188,0.7935,80.8
+CLS Arica,Aterrizaje cable submarino,GENERA,774,0.003,Arica,0.9815,0.1912,0.7903,80.5
+Telxius Arica DC,Data center,GENERA,774,0.003,Arica,0.9815,0.1912,0.7903,80.5
+CLS Caldera,Aterrizaje cable submarino,INTERCAMBIA,2555,0.018,Copiapó (58 km),0.9815,0.1928,0.7887,80.4
+"Troncal N-3676 (Copiapó, 16 km)",Nodo troncal,INTERCAMBIA,2462,0.018,Copiapó (16 km),0.9815,0.1937,0.7878,80.3
+CLS Iquique,Aterrizaje cable submarino,INTERCAMBIA,1700,0.004,Iquique,0.9815,0.1944,0.7871,80.2
+"Troncal N-1625 (Taltal, 0 km)",Nodo troncal,INTERCAMBIA,1713,0.011,Taltal,0.9815,0.1954,0.7861,80.1
+CLS Tocopilla,Aterrizaje cable submarino,INTERCAMBIA,2829,0.006,Calama (137 km),0.9815,0.1954,0.7861,80.1
+CLS Antofagasta,Aterrizaje cable submarino,INTERCAMBIA,30,0.008,Antofagasta,0.9815,0.1955,0.786,80.1
+"Troncal N-1362 (Antofagasta, 16 km)",Nodo troncal,INTERCAMBIA,1463,0.008,Antofagasta (16 km),0.9815,0.1956,0.7859,80.1
+EdgeConneX EDCSCL01,Data center,GENERA,4549,0.276,Santiago (17 km),0.9815,0.2088,0.7727,78.7
+PIT Chile Santiago,IXP / PIT,INTERCAMBIA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+PIT entel Santiago,IXP / PIT,INTERCAMBIA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+ixFabric Santiago,IXP / PIT,INTERCAMBIA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+Chile IX by PIT.net,IXP / PIT,INTERCAMBIA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+Cirion SAN1,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+IFX Santiago,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+PowerHost Santiago,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+EdgeUno SCL1,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+entel CNT (Torre Entel),Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+Ascenty SCL02,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+GTD Moneda,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+Ascenty SCL01,Data center,GENERA,4550,0.286,Santiago (10 km),0.9815,0.2339,0.7476,76.2
+Grupo ZGH La Florida,Data center,GENERA,1815,0.317,Santiago (18 km),0.0,0.0,0.0,
