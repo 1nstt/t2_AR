@@ -1,2 +1,0 @@
-﻿id,titulo,magnitud,tipo_magnitud,fecha_utc,fecha_chile,lat,lon,profundidad_km,estado,mmi_max,cdi_max,reportes_sentido,significancia,red,geom_wkt
-official20100227063411530_30,"M 8.8 - 2010 Maule, Chile Earthquake",8.8,mww,2010-02-27 06:34:11.530,2010-02-27 03:34:11.530,-36.122,-72.898,22.90,reviewed,8.249,9.1,2853,2101,official,POINT(-72.898 -36.122)

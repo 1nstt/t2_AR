@@ -1,5 +1,0 @@
-﻿escenario,descripcion,aristas,aristas_aleatorias,n_nodos_clave,pares,metodo,attr,error_estandar,ic95_inf,ic95_sup,iteraciones,pares_conectados,attr_sql_pgrouting,coincide_sql,segundos,cota_hoeffding_eps
-operacion,Red en operación: topología de la BD con prob_falla de cada enlace,4730,0,55,1485,exacto,0.9636363636363636,0.0,0.9636363636363636,0.9636363636363636,0,1431.0,0.9636363636363636,True,0.0,
-operacion_sin_sinteticos,Misma red sin los 4 enlaces sintéticos (solo datos),4726,0,55,1485,exacto,0.47878787878787876,0.0,0.47878787878787876,0.47878787878787876,0,711.0,0.47878787878787876,True,0.0,
-operacion_montecarlo,Red en operación calculada con Monte Carlo (debe coincidir con el exacto),4730,0,55,1485,montecarlo,0.9636363636363634,1.5701317124672651e-18,0.9636363636363634,0.9636363636363634,20000,,,,8.4,0.009603227913199208
-ilustrativo_p0.01,ILUSTRATIVO: todos los enlaces con prob_falla = 0.01 (no modifica la BD),4730,4730,55,1485,montecarlo,0.4821307744107744,0.0014450068766573277,0.47929856093252604,0.48496298788902276,20000,,,,8.9,0.009603227913199208

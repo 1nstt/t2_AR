@@ -36,25 +36,6 @@ services:
       db:
         condition: service_healthy
 
-  # Visor web dinámico: http://localhost:8000  (lee la BD en vivo)
-  web:
-    build:
-      context: .
-      dockerfile: web/Dockerfile
-    environment:
-      PGHOST: db
-      PGPORT: 5432
-      PGDATABASE: ${POSTGRES_DB}
-      PGUSER: ${POSTGRES_USER}
-      PGPASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "127.0.0.1:${WEB_PORT:-8000}:8000"
-    volumes:
-      - .:/app:ro
-    depends_on:
-      db:
-        condition: service_healthy
-
   # main.py: TODO el flujo con un solo comando (BD desde main.sql, P(falla),
   # ATTR antes/después y mapa Leaflet en http://localhost:8080)
   #     python main.py   (o: docker compose up --build main)

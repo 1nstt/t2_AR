@@ -38,13 +38,49 @@ def titulo(t):
 
 
 def cargar_datos(eng):
-    titulo("1. Carga de la red y los nodos clave a PostGIS (EPSG:32719)")
     red = gpd.read_file(SALIDA / "infraestructura_limpia.geojson").to_crs(CRS_METROS)
     red.rename_geometry("geom").to_postgis("infra_original", eng, if_exists="replace", index=False)
     claves = gpd.read_file(SALIDA / "nodos_clave.geojson").to_crs(CRS_METROS)
     claves[["nombre", "tipo", "rol", "geometry"]].rename_geometry("geom").to_postgis(
         "nodos_clave", eng, if_exists="replace", index=False)
     print(f"   infra_original: {len(red)} tramos | nodos_clave: {len(claves)} puntos")
+
+
+def construir(con, eng):
+    """Topología completa sin pruebas ni exportaciones (la usa main.py de la raíz)."""
+    cargar_datos(eng)
+    for f in ["01_red_cortada.sql", "02_create_topology.sql", "03_prob_falla.sql", "04_conectividad.sql"]:
+        ejecutar_sql(con, f)
+    ejecutar_sql(con, "05_enlaces_sinteticos.sql")
+    for f in ["02_create_topology.sql", "04_conectividad.sql", "06_nodos_clave.sql"]:
+        ejecutar_sql(con, f)
+
+
+def renumerar_vertices(con, referencia):
+    """pgr_createTopology numera los vértices según el orden físico de las aristas, que cambia entre
+    ejecuciones. Si la topología es la misma que `referencia` (id, source, target), copia su numeración
+    para que los id coincidan con main.sql y el informe. Devuelve False si la topología es otra."""
+    nueva = consulta(con, "SELECT id, source, target FROM red ORDER BY id")
+    u = referencia.merge(nueva, on="id", suffixes=("_ref", "_nueva"))
+    if not len(u) == len(nueva) == len(referencia):
+        return False
+    pares = {(int(n), int(r)) for lado in ("source", "target")
+             for n, r in zip(u[f"{lado}_nueva"], u[f"{lado}_ref"])}
+    if not len(pares) == len({n for n, _ in pares}) == len({r for _, r in pares}):
+        return False                     # no hay correspondencia uno a uno entre vértices
+    con.execute("DROP TABLE IF EXISTS mapa_vertices")
+    con.execute("CREATE TABLE mapa_vertices (nuevo bigint PRIMARY KEY, ref bigint NOT NULL UNIQUE)")
+    with con.cursor() as cur:
+        cur.executemany("INSERT INTO mapa_vertices VALUES (%s, %s)", sorted(pares))
+    con.execute("""
+        UPDATE red r SET source = a.ref, target = b.ref FROM mapa_vertices a, mapa_vertices b
+         WHERE a.nuevo = r.source AND b.nuevo = r.target;
+        UPDATE red_vertices_pgr SET id = -id;
+        UPDATE red_vertices_pgr v SET id = m.ref FROM mapa_vertices m WHERE m.nuevo = -v.id;
+        DROP TABLE mapa_vertices;""")
+    for f in ["04_conectividad.sql", "06_nodos_clave.sql"]:
+        ejecutar_sql(con, f)
+    return True
 
 
 def estado(con, etapa):
@@ -214,6 +250,7 @@ def main():
     titulo("0. Versiones del entorno")
     print(consulta(con, "SELECT version() AS postgresql, postgis_lib_version() AS postgis, "
                         "pgr_version() AS pgrouting").T.to_string(header=False))
+    titulo("1. Carga de la red y los nodos clave a PostGIS (EPSG:32719)")
     cargar_datos(eng)
 
     titulo("2-5. Corte en uniones en T, pgr_createTopology, prob_falla y conectividad")

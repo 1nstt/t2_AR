@@ -1,6 +1,0 @@
-﻿codigo_tipo,modelo,k,justificacion
-FIBRA,ALA_2001,0.3,"Cable de fibra en ducto HDPE enterrado: muy dúctil y tolera deformación; se asimila al rango bajo de K1 de ALA (tuberías dúctiles 0,3-0,5)."
-CONECTOR,ALA_2001,0.3,Enlace sintético (apartado 2.0): se supone fibra enterrada como el resto de la troncal.
-CAMINO,ALA_2001,0.5,"Fibra a enterrar junto al camino: además del suelo, expuesta a derrumbes, puentes y terraplenes; K1 = 0,5 (dúctil, mitad del rango)."
-POSTE,ALA_2001,1.0,"Cable aéreo en postación eléctrica: caída de postes, choque de conductores y dependencia de la red eléctrica; K1 = 1 (frágil)."
-FERRY,HAZUS_PUERTO,,Sin cable: el enlace se corta si queda fuera de servicio un terminal portuario (daño en muelles o suspensión por alerta de tsunami).

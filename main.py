@@ -11,13 +11,15 @@ vuelve a ejecutar a sí mismo dentro del contenedor `main`.
 Pasos:
   1. BD      Crea la base `red_chile` VACÍA y carga main.sql (infraestructura:
              topología de pgr_createTopology, nodos clave, sismo de USGS).
-  2. P(f)    Calcula la probabilidad de falla de cada enlace tras el M 8.8
+  2. Topo    Reconstruye la topología desde infraestructura_limpia.geojson con
+             pgr_createTopology (tolerancia 5 m) y la compara con main.sql.
+  3. P(f)    Calcula la probabilidad de falla de cada enlace tras el M 8.8
              (sql/terremoto/02_modelo_falla.sql: Youngs 1997 + ALA 2001 +
              HAZUS) y la compara con la que trae main.sql.
-  3. ATTR    ATTR antes del sismo (prob_falla = 0, exacto, verificado con
+  4. ATTR    ATTR antes del sismo (prob_falla = 0, exacto, verificado con
              pgr_connectedComponents) y después (prob_falla_8_8, Monte Carlo
              N = 20.000), con la diferencia y la variación en %.
-  4. Mapa    Levanta el visor Leaflet sobre `red_chile`: nodos clave, enlaces
+  5. Mapa    Levanta el visor Leaflet sobre `red_chile`: nodos clave, enlaces
              coloreados por P(falla), epicentro, contornos del ShakeMap y
              enlaces sintéticos destacados.
 
@@ -44,7 +46,7 @@ REFERENCIA_ATTR = RAIZ / "datos" / "salida" / "attr_post" / "attr_post_resumen.c
 
 
 def titulo(n, texto):
-    print(f"\n{'=' * 78}\n[{n}/4] {texto}\n{'=' * 78}", flush=True)
+    print(f"\n{'=' * 78}\n[{n}/5] {texto}\n{'=' * 78}", flush=True)
 
 
 def en_docker():
@@ -185,9 +187,34 @@ def main():
     p_main = consulta(con, "SELECT id, prob_falla_8_8 FROM red ORDER BY id")
 
     # ------------------------------------------------------------------
-    # 2. Probabilidad de falla de cada enlace (4.1 / 4.2)
+    # 2. Topología con pgr_createTopology (2.0)
     # ------------------------------------------------------------------
-    titulo(2, "Probabilidad de falla de cada enlace tras el M 8.8")
+    titulo(2, "Topología con pgr_createTopology (tolerancia 5 m)")
+    if hay_pgrouting:
+        import topologia
+        from db import motor
+        sql_topo = {
+            "enlaces (source, target)": "SELECT id, source, target, sintetico, codigo_tipo, "
+                                        "round(longitud_km::numeric, 6) FROM red ORDER BY id",
+            "vértices (grado)": "SELECT id, cnt FROM red_vertices_pgr ORDER BY id",
+            "nodos clave": "SELECT nombre, id_vertice FROM nodo_clave_vertice ORDER BY nombre",
+        }
+        previa = {k: consulta(con, q) for k, q in sql_topo.items()}
+        ref_red = consulta(con, "SELECT id, source, target FROM red ORDER BY id")
+        topologia.construir(con, motor())
+        if topologia.renumerar_vertices(con, ref_red):
+            print("Misma topología que main.sql (correspondencia uno a uno); se conserva su numeración de vértices")
+        for k, q in sql_topo.items():
+            nueva = consulta(con, q)
+            print(f"{k}: {len(nueva)} filas -> "
+                  f"{'igual a main.sql' if nueva.equals(previa[k]) else 'DISTINTA de main.sql (revisar)'}")
+    else:
+        print("   pgRouting no disponible: se usa la topología guardada en main.sql")
+
+    # ------------------------------------------------------------------
+    # 3. Probabilidad de falla de cada enlace (4.1 / 4.2)
+    # ------------------------------------------------------------------
+    titulo(3, "Probabilidad de falla de cada enlace tras el M 8.8")
     print(f"-> {SQL_MODELO.relative_to(RAIZ)} (Youngs 1997 + ALA 2001 + HAZUS, ST_Distance en EPSG:32719)")
     con.execute(SQL_MODELO.read_text(encoding="utf-8"))
     p_nueva = consulta(con, "SELECT id, prob_falla_8_8 FROM red ORDER BY id")
@@ -207,9 +234,9 @@ def main():
           f"({'coincide' if dif < 1e-9 else 'NO coincide'})")
 
     # ------------------------------------------------------------------
-    # 3. ATTR antes y después (3.1 y 5.0)
+    # 4. ATTR antes y después (3.1 y 5.0)
     # ------------------------------------------------------------------
-    titulo(3, "ATTR de los nodos clave: antes y después del M 8.8")
+    titulo(4, "ATTR de los nodos clave: antes y después del M 8.8")
     red = A.leer_red(con)
     p88 = consulta(con, "SELECT prob_falla_8_8 FROM red ORDER BY id")["prob_falla_8_8"].astype(float).to_numpy()
     todas = np.ones(len(p88), bool)
@@ -242,11 +269,11 @@ def main():
     print(f"\nTiempo total: {time.time() - t0:.0f} s")
 
     # ------------------------------------------------------------------
-    # 4. Mapa Leaflet
+    # 5. Mapa Leaflet
     # ------------------------------------------------------------------
     if args.sin_mapa:
         return
-    titulo(4, "Mapa Leaflet")
+    titulo(5, "Mapa Leaflet")
     url = os.environ.get("MAPA_URL", f"http://localhost:{args.puerto}")
     print(f"Abrir {url}  (Ctrl+C para terminar)")
     print("  · Escenario ' Terremoto 8.8': enlaces coloreados por P(falla), epicentro, plano de ruptura,")

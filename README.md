@@ -15,18 +15,24 @@ python3 main.py
 | Paso | Qué hace |
 | :---: | :--- |
 | 1 | Crea la base **`red_chile` vacía** y carga [`main.sql`](main.sql): topología de `pgr_createTopology`, 55 nodos clave y sismo de USGS |
-| 2 | **Calcula la probabilidad de falla** de los 4.730 enlaces con [`sql/terremoto/02_modelo_falla.sql`](sql/terremoto/02_modelo_falla.sql) y verifica que coincide con la de `main.sql` |
-| 3 | **ATTR antes** (exacto, verificado con `pgr_connectedComponents`) y **después** del 8.8 (Monte Carlo, N = 20.000), con diferencia y % |
-| 4 | Levanta el **mapa Leaflet** sobre `red_chile` (nodos clave, enlaces coloreados por P(falla), epicentro, enlaces sintéticos) |
+| 2 | **Topología:** la reconstruye desde `datos/salida/infraestructura_limpia.geojson` con `pgr_createTopology` (tolerancia 5 m) y la compara con `main.sql` |
+| 3 | **Calcula la probabilidad de falla** de los 4.730 enlaces con [`sql/terremoto/02_modelo_falla.sql`](sql/terremoto/02_modelo_falla.sql) y verifica que coincide con la de `main.sql` |
+| 4 | **ATTR antes** (exacto, verificado con `pgr_connectedComponents`) y **después** del 8.8 (Monte Carlo, N = 20.000), con diferencia y % |
+| 5 | Levanta el **mapa Leaflet** sobre `red_chile` (nodos clave, enlaces coloreados por P(falla), epicentro, enlaces sintéticos) |
 
 Salida (resumida) de `python3 main.py`:
 
 ```
-[1/4] Carga de main.sql en una base vacía (red_chile)
+[1/5] Carga de main.sql en una base vacía (red_chile)
 main.sql: 4.5 MB, 15 tablas con datos
  enlaces  sinteticos  vertices  nodos_clave sismo_mw
     4730           4      4559           55      8.8
-[2/4] Probabilidad de falla de cada enlace tras el M 8.8
+[2/5] Topología con pgr_createTopology (tolerancia 5 m)
+Misma topología que main.sql (correspondencia uno a uno); se conserva su numeración de vértices
+enlaces (source, target): 4730 filas -> igual a main.sql
+vértices (grado): 4559 filas -> igual a main.sql
+nodos clave: 55 filas -> igual a main.sql
+[3/5] Probabilidad de falla de cada enlace tras el M 8.8
 codigo_tipo  enlaces      km p_media  p_max cortes_esperados
       POSTE     1273  6712.3  0.1724 0.7888            219.5
       FIBRA     2041 10312.8  0.0608 0.4949            124.1
@@ -35,7 +41,7 @@ codigo_tipo  enlaces      km p_media  p_max cortes_esperados
    CONECTOR        4     3.0  0.0216 0.0754              0.1
 Total: 390.7 cortes esperados | sin probabilidad: 0 | fuera de [0, 1]: 0
 Diferencia máxima con la probabilidad guardada en main.sql: 0.00e+00 (coincide)
-[3/4] ATTR de los nodos clave: antes y después del M 8.8
+[4/5] ATTR de los nodos clave: antes y después del M 8.8
 SQL (pgr_connectedComponents): ATTR = 0.963636 (1431/1485 pares)
                               ATTR   IC 95 %
 Antes (en operación)      0.963636   exacto (1431 de 1485 pares conectados)
@@ -43,11 +49,11 @@ Después (M 8.8)           0.130923   [0.130523, 0.131324] Monte Carlo N = 20000
 Diferencia               -0.832713   (-86.4 %)
 Valores guardados: antes 0.963636, después 0.130923 -> mismos valores
 Tiempo total: 13 s
-[4/4] Mapa Leaflet
+[5/5] Mapa Leaflet
 Abrir http://localhost:8080  (Ctrl+C para terminar)
 ```
 
-* **Dependencias:** las instala Docker. Imagen `db`: PostgreSQL 17 + PostGIS 3.5 + pgRouting 3.7.3. Imagen `main`/`app`: Python 3.12 con [`requirements.txt`](requirements.txt): `geopandas`, `shapely` y `pyproj` (geometrías), `numpy`, `scipy` y `networkx` (grafo y Monte Carlo del ATTR), `psycopg` (PostGIS), `fastapi` y `uvicorn` (servidor del mapa Leaflet), `folium` (mapas estáticos) y `scikit-learn` (DBSCAN). Las credenciales de la base local están en `.env`.
+* **Dependencias:** las instala Docker. Imagen `db`: PostgreSQL 17 + PostGIS 3.5 + pgRouting 3.7.3. Imágenes `main` y `app`: Python 3.12 con [`requirements.txt`](requirements.txt): `geopandas`, `shapely` y `pyproj` (geometrías), `numpy`, `scipy` y `networkx` (grafo y Monte Carlo del ATTR), `psycopg` (PostGIS), `fastapi` y `uvicorn` (servidor del mapa Leaflet), `folium` (mapas estáticos) y `scikit-learn` (DBSCAN). Las credenciales de la base local están en `.env`.
 * **Opciones:** `python3 main.py --sin-mapa` (solo resultados, sin levantar el mapa), `--iteraciones N`, `--bd NOMBRE`. Otro puerto: `MAIN_PORT=9000 python3 main.py`. Equivalente sin pasar por el host: `docker compose up --build main`.
 * **Sin Docker:** `python main.py --local` usa un PostgreSQL con PostGIS + pgRouting en `localhost` (credenciales de `.env`) y requiere `pip install -r requirements.txt` con Python 3.12 (las versiones fijadas no tienen ruedas para 3.14).
 * `main.py` no modifica la base de trabajo `ruteo`: crea `red_chile` desde `main.sql` cada vez que se ejecuta.
@@ -77,13 +83,9 @@ Hay que respetar el orden: cada paso usa lo que deja el anterior en la BD. (`scr
 
 Enlaces directos a estas vistas: `http://localhost:8080/?escenario=terremoto&color=p&vista=-35.8,-72.2,7` y `http://localhost:8080/?escenario=operacion`.
 
-## Visor web dinámico (detalle)
+## Detalle del visor
 
-El mismo mapa que levanta `main.py`, también disponible como servicio aparte sobre la base de trabajo `ruteo`. Un visor en el navegador que lee la base PostGIS **en vivo** (FastAPI + Leaflet). Muestra la infraestructura, la topología, el sismo, las probabilidades de falla y el ATTR, con filtros y la ficha de cada elemento:
-
-```bash
-docker compose up -d db web      # luego abrir http://localhost:8000
-```
+Visor (FastAPI + Leaflet) que lee PostGIS en vivo, en <http://localhost:8080>:
 
 | Pestaña | Qué muestra |
 | :--- | :--- |
@@ -95,8 +97,8 @@ docker compose up -d db web      # luego abrir http://localhost:8000
 * **Escenario** (arriba): **En operación** muestra la red con `prob_falla = 0` y oculta todo lo del sismo; **Terremoto 8.8** activa el epicentro, los contornos, los colores y filtros por probabilidad, PGA y criticidad, y la pérdida de cada nodo clave. Las fichas abiertas se actualizan al cambiar, y el escenario elegido se recuerda al recargar.
 * Al hacer clic en un enlace se abre su ficha: atributos de la capa de origen, `source`/`target`, el cálculo completo de P(falla) (distancia → PGA → PGV → K → P), la justificación de K y, si es un puente, cuánto cae el ATTR al cortarse.
 * **Mapas estáticos** abre los HTML de `mapas/`.
-* API con todos los datos en JSON/GeoJSON: <http://localhost:8000/api/docs>.
-* Código en `web/` (`api.py`, `static/`). Si se vuelven a correr los scripts, hay que reiniciar el visor (`docker compose restart web`) para que recargue la red.
+* API con todos los datos en JSON/GeoJSON: <http://localhost:8080/api/docs>.
+* Código en `web/` (`api.py`, `static/`).
 
 ## Estructura
 
@@ -121,9 +123,8 @@ t2-ruteo/
 │   └── terremoto/01_tablas.sql
 │       terremoto/02_modelo_falla.sql
 ├── datos/
-│   ├── entrada/                         ← shapefiles originales y respuestas de USGS (usgs/)
-│   └── salida/                          ← un subdirectorio por apartado:
-│       topologia/ attr/ terremoto/ modelo_falla/ attr_post/ main_sql/
+│   ├── entrada/                         ← shapefiles originales (scripts/terremoto.py descarga aquí usgs/)
+│   └── salida/                          ← red limpia, nodos clave y resultados que usa el visor
 ├── mapas/                               ← mapa_infraestructura, mapa_nodos_clave, mapa_topologia
-└── web/                                 ← visor dinámico: api.py (FastAPI), static/ (Leaflet), Dockerfile
+└── web/                                 ← visor dinámico: api.py (FastAPI), static/ (Leaflet)
 ```

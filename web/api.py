@@ -4,7 +4,7 @@ API FastAPI que lee en vivo la base PostGIS del proyecto (contenedor `db`) y
 completa la metadata con las salidas de los scripts (`datos/salida/`).
 El frontend (web/static/) consume estos endpoints.
 
-    docker compose up -d web      ->  http://localhost:8000
+    python3 main.py      ->  http://localhost:8080
 """
 import csv
 import json

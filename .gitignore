@@ -2,3 +2,15 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+
+# Salidas que regeneran los scripts (no las necesita main.py)
+datos/entrada/usgs/
+datos/salida/*
+!datos/salida/infraestructura_limpia.geojson
+!datos/salida/nodos_clave.csv
+!datos/salida/nodos_clave.geojson
+!datos/salida/attr_post/
+datos/salida/attr_post/*
+!datos/salida/attr_post/attr_post_resumen.csv
+!datos/salida/attr_post/enlaces_criticos.csv
+!datos/salida/attr_post/nodos_clave_afectados.csv
